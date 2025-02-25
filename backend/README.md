@@ -11,7 +11,7 @@ uv venv
 ```
 To activate venv
 ```
-.venv/Scripts/activate
+source .venv/Scripts/activate
 ```
 
 ## Installation of all packages
