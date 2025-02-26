@@ -5,5 +5,9 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "autogen-agentchat>=0.4.7",
+    "autogen-ext[openai]>=0.4.7",
+    "dotenv>=0.9.9",
     "fastapi[standard]>=0.115.8",
+    "playwright>=1.50.0",
 ]
