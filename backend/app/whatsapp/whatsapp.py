@@ -18,11 +18,12 @@ async def whatsapp_webhook(message: WhatsappMessage):
     body = {
         "messaging_product": "whatsapp",
         "to": "6597714873",
-        "type": "template",
-        "template": {
-            "name": "hello_world",
-            "language": {"code": "en_US"}
+        "type": "text",
+        "text": {
+                "body": f"{message.message}"
         }
     }
     r = requests.post(settings.whatsapp_web, headers=headers)
-    r
+    if r.status_code >= 300:
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+    return {200 : {"description" : "sucessfully sent message"}}
