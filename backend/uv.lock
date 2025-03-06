@@ -129,6 +129,7 @@ dependencies = [
     { name = "fastapi", extra = ["standard"] },
     { name = "jigsawstack" },
     { name = "pydantic-settings" },
+    { name = "python-dotenv" },
     { name = "requests" },
     { name = "uvicorn" },
 ]
@@ -139,6 +140,7 @@ requires-dist = [
     { name = "fastapi", extras = ["standard"], specifier = ">=0.115.8" },
     { name = "jigsawstack", specifier = ">=0.1.29" },
     { name = "pydantic-settings", specifier = ">=2.8.1" },
+    { name = "python-dotenv", specifier = ">=1.0.1" },
     { name = "requests", specifier = ">=2.32.3" },
     { name = "uvicorn", specifier = ">=0.34.0" },
 ]
