@@ -7,6 +7,11 @@ requires-python = ">=3.11"
 dependencies = [
     "dotenv>=0.9.9",
     "fastapi[standard]>=0.115.8",
+<<<<<<< Updated upstream
     "jigsawstack>=0.1.29",
+=======
+    "pydantic-settings>=2.8.1",
+    "requests>=2.32.3",
+>>>>>>> Stashed changes
     "uvicorn>=0.34.0",
 ]
