@@ -9,6 +9,7 @@ dependencies = [
     "fastapi[standard]>=0.115.8",
     "jigsawstack>=0.1.29",
     "pydantic-settings>=2.8.1",
+    "python-dotenv>=1.0.1",
     "requests>=2.32.3",
     "uvicorn>=0.34.0",
 ]
