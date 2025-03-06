@@ -3,7 +3,7 @@ import requests
 from ..config import settings
 from pydantic import BaseModel
 
-router = APIRouter()
+router = APIRouter(prefix="/whatsapp",tags=["whatsapp"])
 
 headers = {"Content-Type": "application/json",
            "Authorization": f"Bearer {settings.access_token}"}
@@ -21,8 +21,8 @@ async def whatsapp_webhook(message: WhatsappMessage):
         "to": "6597714873",
         "type": "text",
         "text": {
-                "preview_url" : True,
-                "body": f"{message.message}"
+            "preview_url": True,
+            "body": f"{message.message}"
         }
     }
     r = requests.post(settings.whatsapp_web, json=body, headers=headers)
@@ -30,4 +30,4 @@ async def whatsapp_webhook(message: WhatsappMessage):
     print(r.text)
     if r.status_code >= 300:
         raise HTTPException(status_code=500, detail=f"{r.text}")
-    return {200 : {"description" : "sucessfully sent message"}}
+    return {200: {"description": "sucessfully sent message"}}
