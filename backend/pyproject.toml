@@ -10,4 +10,12 @@ dependencies = [
     "langchain-community>=0.3.19",
     "langchain[openai]>=0.3.20",
     "langgraph[graph]>=0.3.5",
+    "dotenv>=0.9.9",
+    "fastapi[standard]>=0.115.8",
+    "jigsawstack>=0.1.29",
+    "pandas>=2.2.3",
+    "pydantic-settings>=2.8.1",
+    "python-dotenv>=1.0.1",
+    "requests>=2.32.3",
+    "uvicorn>=0.34.0",
 ]
