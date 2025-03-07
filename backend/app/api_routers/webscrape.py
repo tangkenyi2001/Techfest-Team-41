@@ -5,11 +5,12 @@ from pydantic import BaseModel, HttpUrl
 from typing import List, Optional, Dict, Any
 import os
 import pandas as pd
+from app.config import settings
 
 load_dotenv()
 
 # Initialise API app
-jigsawstack = JigsawStack()
+jigsawstack = JigsawStack(api_key=settings.jigsawstack_api_key)
 
 # Router
 router = APIRouter(
