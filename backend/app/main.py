@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from .whatsapp import whatsapp
-from api_routers.webscrape import router as webscrape_router
+from .api_routers.webscrape import router as webscrape_router
 from fastapi.responses import HTMLResponse
 from .rag import rag_routes
 
