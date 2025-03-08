@@ -31,13 +31,14 @@ export default function Home() {
     setLoading(true);
     setResult(null);
     try {
-      const response = await fetch('/api/factcheck', {
+      const response = await fetch('http://localhost:8000/rag', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: input, url: ["https://example.com"] }), // Replace with actual sources
+        body: JSON.stringify({"message":input}), // Replace with actual sources
       });
       const data = await response.json();
       setResult(data);
+      console.log(data)
     } catch (error) {
       setResult({ error: 'Unable to fetch results. Please try again later.' });
     } finally {
@@ -92,13 +93,22 @@ export default function Home() {
                     {/* <NodeGraph data={result.nodeGraphData} /> */}
 
                     <section className="mt-6">
-                      <h3 className="text-xl font-semibold mb-2">Supporting Sources</h3>
-                      <ul className="list-disc pl-5">
-                        {result.sources.map((source, idx) => (
-                          <li key={idx}><a href={source.link} target="_blank" className="underline hover:text-blue-500">{source.title}</a></li>
-                        ))}
-                      </ul>
-                    </section>
+                    <h3 className="text-xl font-semibold mb-2">Supporting Sources</h3>
+                    <ul className="list-disc pl-5">
+                      {result.sources && result.sources.map((source, idx) => (
+                        <li key={idx}>
+                          <a 
+                            href={source} 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="underline hover:text-blue-500"
+                          >
+                            Source {idx + 1}: {new URL(source).hostname}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </section>
                   </>
                 )}
               </CardContent>

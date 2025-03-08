@@ -10,6 +10,8 @@ from langchain_openai import OpenAIEmbeddings
 from langchain.chat_models import init_chat_model
 from dotenv import load_dotenv
 from langchain_core.tools import tool
+from pydantic import BaseModel, Field
+from langchain_core.prompts import PromptTemplate
 
 load_dotenv()
 # Load and chunk contents of the blog
@@ -45,19 +47,41 @@ def query(query: str,url: List[str])-> str:
         _ = vector_store.add_documents(documents=all_splits)
     llm = init_chat_model("gpt-4o-mini", model_provider="openai")
     # Define prompt for question-answering
-    prompt = hub.pull("rlm/rag-prompt")
+    prompt = PromptTemplate.from_template("""
+    You are a helpful anti-fake news AI assistant that answers questions based on the provided context and differentiates real news and fake news.The provided context are real news found on the internet. Your job is
+    to verify if the question is a real or fake news using the context.                              
+
+    Context:
+    {context}
+
+    Statement: {question}
+
+    Instructions:
+    - Answer the question based ONLY on the context provided
+    - If the context doesn't contain the answer, say "I don't have enough information to answer this question"
+    - Keep your answer concise and to the point
+    - If appropriate, cite the relevant parts of the context and include it in your answer
+    - Give explanations for your answers
+    - Always include the source, including the url.
+    - Always answer either "FAKE" or "REAL" at the start   
+    - Show the comparison between the context and the statement to show what exactly is wrong, and what should be correct.                                                                                                                                                   
+                                        
+
+    Answer:
+    """)
+
     # Define application steps
     def retrieve(state: State):
         retrieved_docs = vector_store.similarity_search(state["question"],k=3)
         return {"context": retrieved_docs}
 
-
     def generate(state: State):
         docs_content = "\n\n".join(doc.page_content for doc in state["context"])
         messages = prompt.invoke({"question": state["question"], "context": docs_content})
         response = llm.invoke(messages)
-        return {"answer": response.content}
+        return {"answer": response}
 
+    
 
     # Compile application and test
     graph_builder = StateGraph(State).add_sequence([retrieve, generate])
