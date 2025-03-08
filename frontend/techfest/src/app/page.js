@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Toggle } from '@/components/ui/toggle';
 import { LoaderCircle, Share2, Info } from 'lucide-react';
+import { PieChart, Pie, Cell, Legend, Tooltip, ResponsiveContainer } from 'recharts';
+
 // import NodeGraph from './components/NodeGraph'; // Placeholder for visualization
 
 export default function Home() {
@@ -14,6 +16,16 @@ export default function Home() {
   const [result, setResult] = useState(null);
   const [darkMode, setDarkMode] = useState(true);
   const [showInfo, setShowInfo] = useState(false);
+
+
+  const fakeNewsData = [
+    { name: 'Social Media', value: 45 },
+    { name: 'Messaging Apps', value: 30 },
+    { name: 'Online Forums', value: 15 },
+    { name: 'Others', value: 10 },
+  ];
+  
+  const COLORS = ['#ff6384', '#ffcd56', '#36a2eb', '#4bc0c0'];
 
   const handleCheckFact = async () => {
     setLoading(true);
@@ -36,9 +48,7 @@ export default function Home() {
   return (
     <div className={`min-h-screen ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-gray-800'} transition-colors duration-300`}>
       <header className="p-4 flex justify-between items-center">
-        <Toggle pressed={darkMode} onPressedChange={setDarkMode}>
-          {darkMode ? 'Light Mode' : 'Dark Mode'}
-        </Toggle>
+
       </header>
 
       <main className="flex flex-col items-center justify-center py-10 px-4">
@@ -94,29 +104,61 @@ export default function Home() {
               </CardContent>
             </Card>
           )}
-      </main>
-
-      <footer className="p-4 text-center relative">
+    <footer className="p-6 text-center relative bg-gray-900">
       <div
         onMouseEnter={() => setShowInfo(true)}
         onMouseLeave={() => setShowInfo(false)}
         className="inline-block relative"
       >
-        <Button variant="ghost" className="gap-1">
+        <Button variant="outline" className="gap-2 shadow-md hover:bg-gray-800 border-gray-700 text-black transition">
           <Info /> How It Works
         </Button>
 
         {showInfo && (
-          <Card className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-80 shadow-lg">
-            <CardContent className="text-sm p-4">
-              <p>
-                <strong>CheckFirstLeh</strong> leverages advanced AI algorithms by crawling the web to validate your input, cross-referencing findings against multiple reputable and trustworthy sources. It then clearly summarizes and visualizes the results to help you understand the reliability and context of the claim.
+          <Card className="absolute top-full left-1/2 transform -translate-x-1/2 mt-3 w-96 shadow-xl border border-gray-700 bg-gray-800 text-white">
+            <CardContent className="text-sm p-5">
+              <p className="leading-relaxed">
+                <strong>CheckFirstLeh</strong> leverages advanced AI algorithms to analyze and validate your inputs by systematically scanning and cross-referencing information from trusted online sources. The summarized insights and visualizations clearly communicate the authenticity and context of claims to empower informed sharing.
               </p>
             </CardContent>
           </Card>
         )}
       </div>
+
+      <section className="mt-12 max-w-4xl mx-auto bg-gray-800 shadow-xl rounded-xl p-8">
+        <h3 className="text-2xl font-bold mb-3 text-white">Severity of Fake News in Singapore</h3>
+        <p className="mb-6 text-gray-300 font-medium leading-relaxed">
+          Fake news continues to significantly impact Singapore's public discourse, political stability, and societal harmony. The pie chart below illustrates the distribution of misinformation sources affecting Singaporeans:
+        </p>
+        <ResponsiveContainer width="100%" height={320}>
+          <PieChart>
+            <Pie
+              data={fakeNewsData}
+              cx="50%"
+              cy="50%"
+              labelLine={false}
+              label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+              outerRadius={110}
+              innerRadius={60}
+              dataKey="value"
+            >
+              {fakeNewsData.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+              ))}
+            </Pie>
+            <Tooltip contentStyle={{ backgroundColor: '#374151', border: 'none' }} />
+            <Legend verticalAlign="bottom" height={36} wrapperStyle={{ color: '#fff' }} />
+          </PieChart>
+        </ResponsiveContainer>
+      </section>
     </footer>
+    <section className="mt-12 max-w-4xl mx-auto bg-gray-800 shadow-lg rounded-xl p-8">
+        <h3 className="text-2xl font-bold mb-3 text-white">What We Do</h3>
+        <p className="text-gray-300 font-medium leading-relaxed">
+          At <strong>CheckFirstLeh</strong>, we collaborate closely with elderly community centers to combat misinformation effectively. Our service gathers and analyzes trending fake news flagged by our intelligent bots and extensive online research. Verified data and insights are then packaged and shared with NGO-operated community centers, which further relay this crucial information to local communities. Together, we empower citizens, particularly seniors, to make informed decisions and confidently navigate digital spaces.
+        </p>
+      </section>
+      </main>
     </div>
   );
 }
