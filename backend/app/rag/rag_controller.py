@@ -20,15 +20,15 @@ from crawl4ai.content_filter_strategy import PruningContentFilter
 from crawl4ai.markdown_generation_strategy import DefaultMarkdownGenerator
 from langchain_core.tools import StructuredTool
 from langchain.prompts import PromptTemplate
+from langchain_community.tools.tavily_search import TavilySearchResults
 load_dotenv()
 # Load and chunk contents of the blog
 class State(TypedDict):
       question: str
       context: List[Document]
       answer: str
-
 async def querytool(query: str,url: List[str])-> str:
-    """ Chunk a website with the given url and measure similarity with user query, allowing it
+    """ Always use this tool after a web search.Scrape websites with the given urls and measure similarity with user query by using vector embeddings, allowing it
     to find similar information to answer user query.
 
     Args:
@@ -111,13 +111,13 @@ async def querytool(query: str,url: List[str])-> str:
         retrieved_docs = vector_store.similarity_search(state["question"],k=3)
         return {"context": retrieved_docs}
 
+
     def generate(state: State):
         docs_content = "\n\n".join(doc.page_content for doc in state["context"])
         messages = prompt.invoke({"question": state["question"], "context": docs_content})
         response = llm.invoke(messages)
-        return {"answer": response}
+        return {"answer": response.content}
 
-    
 
     # Compile application and test
     graph_builder = StateGraph(State).add_sequence([retrieve,generate])
