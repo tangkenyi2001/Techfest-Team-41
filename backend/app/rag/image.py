@@ -23,8 +23,8 @@ async def analyze_image(file: UploadFile = File(...)):
     try:
         params = {
         'models': 'genai',
-        'api_user': '1522811839',
-        'api_secret': 'sRo89LzGs2tM3D42rMbjW9a87CTi5HfK'
+        'api_user': 'key',
+        'api_secret': 'secret'
     }
 
         # Prepare the file dictionary
