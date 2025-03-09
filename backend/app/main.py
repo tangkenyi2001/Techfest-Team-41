@@ -21,6 +21,7 @@ app.add_middleware(
 )
 app.include_router(whatsapp.router)
 app.include_router(rag_routes.router)
+
 app.include_router(webscrape_router)
 
 
