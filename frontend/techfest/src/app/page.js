@@ -88,32 +88,32 @@ export default function Home() {
                   <Button variant="outline" size="icon"><Share2 /></Button>
                 </div>
 
-                    <p className="mb-4">{result.explanation}</p>
+                <p className="mb-4">{result.explanation}</p>
+              </>
+            )}
+          </CardContent>
+        </Card>
+      )}
 
-                    {/* <NodeGraph data={result.nodeGraphData} /> */}
-
-                    <section className="mt-6">
-                    <h3 className="text-xl font-semibold mb-2">Supporting Sources</h3>
-                    <ul className="list-disc pl-5">
-                      {result.sources && result.sources.map((source, idx) => (
-                        <li key={idx}>
-                          <a 
-                            href={source} 
-                            target="_blank" 
-                            rel="noopener noreferrer" 
-                            className="underline hover:text-blue-500"
-                          >
-                            Source {idx + 1}: {source}
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
-                  </section>
-                  </>
-                )}
-              </CardContent>
-            </Card>
-          )}
+      {result && !result.error && result.sources && (
+        <section className="mt-12 max-w-4xl mx-auto">
+          <h3 className="text-2xl font-bold mb-4 text-white">Supporting Sources</h3>
+          <div className="flex flex-wrap justify-center gap-4">
+            {result.sources.map((source, idx) => (
+              <a
+                key={idx}
+                href={source}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-56 bg-gray-800 shadow-lg rounded-lg border border-gray-700 p-4 hover:bg-gray-700 transition transform hover:scale-105"
+              >
+                <h4 className="text-lg font-semibold text-white">Source {idx + 1}</h4>
+                <p className="text-sm text-gray-400 mt-2 break-words">{source}</p>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
     <footer className="p-6 text-center relative bg-gray-900">
       <div
         onMouseEnter={() => setShowInfo(true)}
