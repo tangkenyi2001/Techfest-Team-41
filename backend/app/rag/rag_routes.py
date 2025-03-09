@@ -8,8 +8,33 @@ from fastapi import APIRouter
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel,Field
 from fastapi.responses import JSONResponse
+from typing import List
+from langchain_core.tools import StructuredTool
+import bs4
+from langchain import hub
+from langchain_community.document_loaders import WebBaseLoader
+from langchain_core.documents import Document
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langgraph.graph import START, StateGraph
+from typing_extensions import List, TypedDict
+from langgraph.graph import StateGraph, START, END
+from langchain_core.vectorstores import InMemoryVectorStore
+from langchain_openai import OpenAIEmbeddings
+from langchain.chat_models import init_chat_model
+from dotenv import load_dotenv
+from langchain_core.tools import tool
+from langchain.document_loaders.base import BaseLoader
+import asyncio
+from crawl4ai import AsyncWebCrawler
+from crawl4ai.async_configs import BrowserConfig, CrawlerRunConfig
+from crawl4ai import AsyncWebCrawler, CrawlerRunConfig
+from crawl4ai.content_filter_strategy import PruningContentFilter
+from crawl4ai.markdown_generation_strategy import DefaultMarkdownGenerator
+from langchain_core.tools import StructuredTool
+from langchain.tools import Tool
 load_dotenv()
-router = APIRouter()
+
+router = APIRouter(tags=["RAGCompletion"])
 
 class userMessage(BaseModel):
     message: str
@@ -26,7 +51,7 @@ async def rag(request: userMessage)->str:
         llm = init_chat_model("gpt-4o-mini", model_provider="openai")
         tools=[query]
         agent_executor = create_react_agent(llm, tools,response_format=ResponseFormatter)
-        response = agent_executor.invoke({"messages": [HumanMessage(content=request.message)]})
+        response = await agent_executor.ainvoke({"messages": [HumanMessage(content=request.message)]})
         # print(response)
         response_dict = response["structured_response"]
         if isinstance(response_dict, ResponseFormatter):
