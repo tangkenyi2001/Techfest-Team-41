@@ -10,4 +10,5 @@ class Settings(BaseSettings):
     groq_api_key: str
     tavily_api_key: str
     jigsawstack_api_key: str
+    telegram_bot_token: str
 settings = Settings()
