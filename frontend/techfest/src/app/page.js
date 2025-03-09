@@ -120,6 +120,7 @@ export default function Home() {
         body: JSON.stringify({ message: input }),
       });
       const data = await response.json();
+      console.log(data)
       setResult(data);
     } catch (error) {
       setResult({ error: "Unable to fetch results. Please try again later." });
@@ -168,13 +169,13 @@ export default function Home() {
   };
 
   const getVerdictIcon = (verdict) => {
-    if (verdict === "True")
+    if (verdict === "REAL")
       return (
         <svg className="h-6 w-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
       );
-    if (verdict === "False")
+    if (verdict === "FAKE")
       return (
         <svg className="h-6 w-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -188,8 +189,8 @@ export default function Home() {
   };
 
   const getVerdictColor = (verdict) => {
-    if (verdict === "True") return "text-green-500";
-    if (verdict === "False") return "text-red-500";
+    if (verdict === "REAL") return "text-green-500";
+    if (verdict === "FAKE") return "text-red-500";
     return "text-yellow-500";
   };
 
@@ -333,17 +334,10 @@ export default function Home() {
                           <p className="text-red-500">{result.error}</p>
                         ) : (
                           <>
-                            {result.summary && (
+                            {result.explanation && (
                               <div className="mb-4">
                                 <h4 className="font-medium mb-2">Summary</h4>
-                                <p className="text-sm">{result.summary}</p>
-                              </div>
-                            )}
-                            
-                            {result.evidence && (
-                              <div className="mb-4">
-                                <h4 className="font-medium mb-2">Evidence</h4>
-                                <p className="text-sm">{result.evidence}</p>
+                                <p className="text-sm">{result.explanation}</p>
                               </div>
                             )}
                             
@@ -355,12 +349,12 @@ export default function Home() {
                                     <li key={idx} className="flex items-center gap-1">
                                       <Icons.ExternalLink />
                                       <a 
-                                        href={source.url} 
+                                        href={source} 
                                         target="_blank" 
                                         rel="noopener noreferrer"
                                         className="hover:underline text-blue-400"
                                       >
-                                        {source.title || source.url}
+                                        {source}
                                       </a>
                                     </li>
                                   ))}
