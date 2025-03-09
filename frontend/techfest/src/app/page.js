@@ -94,7 +94,13 @@ export default function Home() {
     }
   };
   return (
+    
     <div className={`min-h-screen ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-gray-800'} transition-colors duration-300`}>
+        <header className="p-6 flex flex-col items-center bg-blue-600 text-white text-2xl font-extrabold shadow-md">
+          <h1 className="tracking-wide">CheckFirstLeh</h1>
+          <p className="text-sm font-medium italic">Don't spread fake news!</p>
+        </header>
+
       <header className="p-4 flex justify-between items-center">
 
       </header>
