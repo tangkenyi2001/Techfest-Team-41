@@ -16,7 +16,10 @@ export default function Home() {
   const [result, setResult] = useState(null);
   const [darkMode, setDarkMode] = useState(true);
   const [showInfo, setShowInfo] = useState(false);
-
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [analysis, setAnalysis] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [imagePreview, setImagePreview] = useState(null);
 
   const fakeNewsData = [
     { name: 'Social Media', value: 45 },
@@ -45,7 +48,51 @@ export default function Home() {
       setLoading(false);
     }
   };
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    setSelectedFile(file);
+    
+    // Create a preview URL for the selected image
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setImagePreview(null);
+    }
+  };
 
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (!selectedFile) return;
+    
+    setIsLoading(true);
+    
+    try {
+      // Create FormData for your Python backend
+      const formData = new FormData();
+      formData.append('file', selectedFile);
+      
+      // Send to Python backend
+      const response = await fetch('http://localhost:8000/image', {
+        method: 'POST',
+        body: formData,
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setAnalysis(data.type.ai_generated);
+      } else {
+        console.error('Error analyzing image');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
   return (
     <div className={`min-h-screen ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-gray-800'} transition-colors duration-300`}>
       <header className="p-4 flex justify-between items-center">
@@ -53,29 +100,80 @@ export default function Home() {
       </header>
 
       <main className="flex flex-col items-center justify-center py-10 px-4">
-        <div className="w-full max-w-3xl flex flex-col items-center justify-center py-10 px-4">
-          <Image
-            src="/giphy.gif"
-            width={150}
-            height={150}
-            alt="Mascot"
-            className="mb-4 mx-auto"
+      <div className="w-full max-w-4xl flex flex-col items-center justify-center py-10 px-4">
+  <Image
+    src="/giphy.gif"
+    width={150}
+    height={150}
+    alt="Mascot"
+    className="mb-4 mx-auto"
+  />
+  
+  {/* Side by side container */}
+  <div className="w-full flex flex-col md:flex-row items-center gap-4">
+    {/* Left side - URL/Text input */}
+    <div className="w-full md:w-1/2">
+      <div className="flex flex-col gap-2">
+        <Input
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Paste URL, news article, enter a claim"
+          className="w-full"
+        />
+        <Button onClick={handleCheckFact} disabled={loading || !input} className="w-full">
+          {loading ? <LoaderCircle className="animate-spin" /> : 'Check Fact'}
+        </Button>
+      </div>
+    </div>
+    
+    {/* Right side - File upload */}
+    <div className="w-full md:w-1/2">
+      <form 
+        onSubmit={handleSubmit} 
+        className="flex flex-col gap-2"
+      >
+        <div className="flex items-center w-full">
+          <input 
+            type="file" 
+            accept="image/*" 
+            onChange={handleFileChange}
+            className="w-full p-1.5 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:bg-blue-500 file:text-white hover:file:bg-blue-600"
           />
-          
-          <div className="w-full flex flex-col items-center gap-4">
-            <Input
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Paste URL, news article, or enter a claim"
-              className="max-w-3xl"
-            />
-            <Button onClick={handleCheckFact} disabled={loading || !input}>
-              {loading ? <LoaderCircle className="animate-spin" /> : 'Check Fact'}
-            </Button>
-          </div>
         </div>
+        <Button 
+          type="submit" 
+          disabled={!selectedFile || isLoading}
+          className="w-full"
+        >
+          {isLoading ? 'Analyzing...' : 'Analyze Image'}
+        </Button>
+      </form>
+    </div>
+  </div>
+</div>
 
-
+{/* Image preview and analysis section - kept below */}
+<div className="w-full max-w-4xl mt-4">
+  <div className="flex flex-col md:flex-row gap-6">
+    {imagePreview && (
+      <div className="w-full md:w-1/2 text-center">
+        <h3 className="text-lg font-medium mb-2">Image Preview:</h3>
+        <img 
+          src={imagePreview} 
+          alt="Preview" 
+          className="max-w-full max-h-[300px] object-contain border border-gray-300 dark:border-gray-700 rounded-md p-1 mx-auto" 
+        />
+      </div>
+    )}
+    
+    {analysis && (
+      <div className="w-full md:w-1/2 text-center">
+        <h3 className="text-lg font-medium mb-2">AI Detection Score:</h3>
+        <p>{analysis}</p>
+      </div>
+    )}
+  </div>
+</div>
         {result && (
         <Card className="w-full max-w-4xl mt-8 shadow-xl bg-gray-800 border border-gray-700 text-white mx-auto">
           <CardContent className="p-6">

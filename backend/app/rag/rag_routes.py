@@ -33,6 +33,7 @@ from crawl4ai.markdown_generation_strategy import DefaultMarkdownGenerator
 from langchain_core.tools import StructuredTool
 from langchain.tools import Tool
 from langchain_community.tools.tavily_search import TavilySearchResults
+from langchain.prompts import PromptTemplate
 
 
 load_dotenv()
@@ -52,7 +53,10 @@ class ResponseFormatter(BaseModel):
 async def rag(request: userMessage)->str:
     try:
         llm = init_chat_model("gpt-4o-mini", model_provider="openai")
-        search = TavilySearchResults(max_results=2)
+        desc='''"The year is 2025.A search engine optimized for comprehensive, accurate, and trusted results. "
+        "Useful for when you need to answer questions about current events. "
+        "Input should be a search query."'''
+        search = TavilySearchResults(max_results=2,description=desc)
         tools=[query,search]
         agent_executor = create_react_agent(llm, tools,response_format=ResponseFormatter)
         response = await agent_executor.ainvoke({"messages": [HumanMessage(content=request.message)]})
