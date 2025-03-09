@@ -143,16 +143,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     message_type = update.message.chat.type
     message = update.message.text
     
-    logger.info(f"Received message from user {update.effective_user.id} in {message_type} chat")
-    
-    # Show typing while bot processes input
-    try:
-        await context.bot.send_chat_action(
-            chat_id=update.effective_chat.id,
-            action=ChatAction.TYPING
-        )
-    except Exception:
-        pass
       
     if message_type in ["group", "supergroup"]:
       if BOT_USERNAME.lower() in message.lower():
@@ -166,6 +156,17 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
       # Private chat 
       response = await handle_response(message)
+      
+    logger.info(f"Received message from user {update.effective_user.id} in {message_type} chat")
+      
+    # Show typing while bot processes input
+    try:
+        await context.bot.send_chat_action(
+            chat_id=update.effective_chat.id,
+            action=ChatAction.TYPING
+        )
+    except Exception:
+        pass
       
     # Reply user
     await update.message.reply_text(response)
