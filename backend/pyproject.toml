@@ -21,4 +21,5 @@ dependencies = [
     "tavily-python>=0.5.1",
     "langgraph-checkpoint-sqlite>=2.0.5",
     "bs4>=0.0.2",
+    "crawl4ai>=0.5.0.post4",
 ]

@@ -30,6 +30,7 @@ def query(query: str,url: List[str])-> str:
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=200)
     embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
     vector_store = InMemoryVectorStore(embeddings)
+    
     for i in url:
         loader = WebBaseLoader(
             web_paths=(i,),
@@ -40,7 +41,7 @@ def query(query: str,url: List[str])-> str:
             ),
         )
         docs = loader.load()
-        all_splits = text_splitter.split_documents(docs)
+        all_splits = text_splitter.split_text(docs)
     # Index chunks
         _ = vector_store.add_documents(documents=all_splits)
     llm = init_chat_model("gpt-4o-mini", model_provider="openai")
