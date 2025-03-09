@@ -51,7 +51,7 @@ async def rag(request: userMessage)->str:
         llm = init_chat_model("gpt-4o-mini", model_provider="openai")
         tools=[query]
         agent_executor = create_react_agent(llm, tools,response_format=ResponseFormatter)
-        response = agent_executor.invoke({"messages": [HumanMessage(content=request.message)]})
+        response = await agent_executor.ainvoke({"messages": [HumanMessage(content=request.message)]})
         # print(response)
         response_dict = response["structured_response"]
         if isinstance(response_dict, ResponseFormatter):
