@@ -32,6 +32,9 @@ from crawl4ai.content_filter_strategy import PruningContentFilter
 from crawl4ai.markdown_generation_strategy import DefaultMarkdownGenerator
 from langchain_core.tools import StructuredTool
 from langchain.tools import Tool
+from langchain_community.tools.tavily_search import TavilySearchResults
+
+
 load_dotenv()
 
 router = APIRouter(tags=["RAGCompletion"])
@@ -49,7 +52,8 @@ class ResponseFormatter(BaseModel):
 async def rag(request: userMessage)->str:
     try:
         llm = init_chat_model("gpt-4o-mini", model_provider="openai")
-        tools=[query]
+        search = TavilySearchResults(max_results=2)
+        tools=[query,search]
         agent_executor = create_react_agent(llm, tools,response_format=ResponseFormatter)
         response = await agent_executor.ainvoke({"messages": [HumanMessage(content=request.message)]})
         # print(response)
