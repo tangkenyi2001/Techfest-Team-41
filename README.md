@@ -28,11 +28,11 @@ CheckFirstLeh uses an Agentic RAG (Retrieval-Augmented Generation) approach that
 5. **Enhanced Decision-Making**: The LLM combines retrieved factual information with its understanding to generate accurate verification
 6. **Transparent Results**: Users receive a clear verdict along with the sources used and reasoning behind the decision
 
-##Backend
+## Backend
 ```
 uv run fastapi dev
 ```
-##FrontEnd
+## FrontEnd
 ```
 npm run start
 ```
