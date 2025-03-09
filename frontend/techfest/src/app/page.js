@@ -318,6 +318,59 @@ export default function Home() {
                         </AlertDescription>
                       </Alert>
                     )}
+                    
+                    {/* Display Results Section - Added this section to display the verification results */}
+                    {result && (
+                      <div className={`mt-6 p-6 rounded-lg border ${darkMode ? "bg-gray-700 border-gray-600" : "bg-gray-50 border-gray-200"}`}>
+                        <div className="flex items-center gap-3 mb-4">
+                          {result.verdict && getVerdictIcon(result.verdict)}
+                          <h3 className={`text-xl font-semibold ${result.verdict && getVerdictColor(result.verdict)}`}>
+                            {result.verdict ? `Verdict: ${result.verdict}` : "Verification Results"}
+                          </h3>
+                        </div>
+                        
+                        {result.error ? (
+                          <p className="text-red-500">{result.error}</p>
+                        ) : (
+                          <>
+                            {result.summary && (
+                              <div className="mb-4">
+                                <h4 className="font-medium mb-2">Summary</h4>
+                                <p className="text-sm">{result.summary}</p>
+                              </div>
+                            )}
+                            
+                            {result.evidence && (
+                              <div className="mb-4">
+                                <h4 className="font-medium mb-2">Evidence</h4>
+                                <p className="text-sm">{result.evidence}</p>
+                              </div>
+                            )}
+                            
+                            {result.sources && result.sources.length > 0 && (
+                              <div>
+                                <h4 className="font-medium mb-2">Sources</h4>
+                                <ul className="text-sm space-y-1">
+                                  {result.sources.map((source, idx) => (
+                                    <li key={idx} className="flex items-center gap-1">
+                                      <Icons.ExternalLink />
+                                      <a 
+                                        href={source.url} 
+                                        target="_blank" 
+                                        rel="noopener noreferrer"
+                                        className="hover:underline text-blue-400"
+                                      >
+                                        {source.title || source.url}
+                                      </a>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+                          </>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </TabsContent>
                 <TabsContent value="image" activeValue={activeTab} className="mt-0">
