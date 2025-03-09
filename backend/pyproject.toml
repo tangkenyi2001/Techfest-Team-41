@@ -21,11 +21,8 @@ dependencies = [
     "tavily-python>=0.5.1",
     "langgraph-checkpoint-sqlite>=2.0.5",
     "bs4>=0.0.2",
-<<<<<<< HEAD
     "python-telegram-bot>=21.11.1",
-=======
     "crawl4ai>=0.5.0.post4",
     "chardet>=5.2.0",
->>>>>>> 5c9ef3b8a1792f71d6c01d558e80defc99c8650f
     "playwright>=1.50.0",
 ]
