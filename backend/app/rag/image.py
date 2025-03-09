@@ -14,6 +14,7 @@ import json
 
 client = OpenAI()
 router = APIRouter(tags=["Image"])
+
 @router.post("/image")
 async def analyze_image(file: UploadFile = File(...)):
     if not file:
