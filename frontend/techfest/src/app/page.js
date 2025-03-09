@@ -103,7 +103,7 @@ export default function Home() {
                             rel="noopener noreferrer" 
                             className="underline hover:text-blue-500"
                           >
-                            Source {idx + 1}: {new URL(source).hostname}
+                            Source {idx + 1}: {source}
                           </a>
                         </li>
                       ))}
