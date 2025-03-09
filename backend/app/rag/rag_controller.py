@@ -28,7 +28,7 @@ class State(TypedDict):
       context: List[Document]
       answer: str
 async def querytool(query: str,url: List[str])-> str:
-    """ Scrape websites with the given urls and measure similarity with user query by using vector embeddings, allowing it
+    """ Always use this tool after a web search.Scrape websites with the given urls and measure similarity with user query by using vector embeddings, allowing it
     to find similar information to answer user query.
 
     Args:
