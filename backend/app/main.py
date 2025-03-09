@@ -3,13 +3,13 @@ from .whatsapp import whatsapp
 from .api_routers.webscrape import router as webscrape_router
 from fastapi.responses import HTMLResponse
 from .rag import rag_routes
-from .rag import tes
+
 
 app = FastAPI()
 
 app.include_router(whatsapp.router)
 app.include_router(rag_routes.router)
-app.include_router(tes.router)
+
 app.include_router(webscrape_router)
 
 
