@@ -111,13 +111,13 @@ async def querytool(query: str,url: List[str])-> str:
         retrieved_docs = vector_store.similarity_search(state["question"],k=3)
         return {"context": retrieved_docs}
 
-
     def generate(state: State):
         docs_content = "\n\n".join(doc.page_content for doc in state["context"])
         messages = prompt.invoke({"question": state["question"], "context": docs_content})
         response = llm.invoke(messages)
-        return {"answer": response.content}
+        return {"answer": response}
 
+    
 
     # Compile application and test
     graph_builder = StateGraph(State).add_sequence([retrieve,generate])

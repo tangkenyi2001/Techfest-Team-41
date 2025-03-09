@@ -1,101 +1,174 @@
+"use client";
 import Image from "next/image";
+import React, { useState } from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Toggle } from '@/components/ui/toggle';
+import { LoaderCircle, Share2, Info } from 'lucide-react';
+import { PieChart, Pie, Cell, Legend, Tooltip, ResponsiveContainer } from 'recharts';
+
+// import NodeGraph from './components/NodeGraph'; // Placeholder for visualization
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.js
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [input, setInput] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState(null);
+  const [darkMode, setDarkMode] = useState(true);
+  const [showInfo, setShowInfo] = useState(false);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+
+  const fakeNewsData = [
+    { name: 'Social Media', value: 45 },
+    { name: 'Messaging Apps', value: 30 },
+    { name: 'Online Forums', value: 15 },
+    { name: 'Others', value: 10 },
+  ];
+  
+  const COLORS = ['#ff6384', '#ffcd56', '#36a2eb', '#4bc0c0'];
+
+  const handleCheckFact = async () => {
+    setLoading(true);
+    setResult(null);
+    try {
+      const response = await fetch('http://localhost:8000/rag', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({"message":input}), // Replace with actual sources
+      });
+      const data = await response.json();
+      setResult(data);
+      console.log(data)
+    } catch (error) {
+      setResult({ error: 'Unable to fetch results. Please try again later.' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className={`min-h-screen ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-gray-800'} transition-colors duration-300`}>
+      <header className="p-4 flex justify-between items-center">
+
+      </header>
+
+      <main className="flex flex-col items-center justify-center py-10 px-4">
+        <div className="w-full max-w-3xl flex flex-col items-center justify-center py-10 px-4">
+          <Image
+            src="/giphy.gif"
+            width={150}
+            height={150}
+            alt="Mascot"
+            className="mb-4 mx-auto"
+          />
+          
+          <div className="w-full flex flex-col items-center gap-4">
+            <Input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Paste URL, news article, or enter a claim"
+              className="max-w-3xl"
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            <Button onClick={handleCheckFact} disabled={loading || !input}>
+              {loading ? <LoaderCircle className="animate-spin" /> : 'Check Fact'}
+            </Button>
+          </div>
         </div>
+
+
+          {result && (
+            <Card className="w-full max-w-4xl mt-8 shadow-xl">
+              <CardContent className="p-6">
+                {result.error ? (
+                  <p className="text-red-500">{result.error}</p>
+                ) : (
+                  <>
+                    <div className="flex justify-between items-center mb-4">
+                      <h2 className={`text-2xl font-semibold ${result.verdict === 'True' ? 'text-green-500' : result.verdict === 'False' ? 'text-red-500' : 'text-yellow-500'}`}>{result.verdict}</h2>
+                      <Button variant="outline" size="icon"><Share2 /></Button>
+                    </div>
+
+                    <p className="mb-4">{result.explanation}</p>
+
+                    {/* <NodeGraph data={result.nodeGraphData} /> */}
+
+                    <section className="mt-6">
+                    <h3 className="text-xl font-semibold mb-2">Supporting Sources</h3>
+                    <ul className="list-disc pl-5">
+                      {result.sources && result.sources.map((source, idx) => (
+                        <li key={idx}>
+                          <a 
+                            href={source} 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="underline hover:text-blue-500"
+                          >
+                            Source {idx + 1}: {new URL(source).hostname}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </section>
+                  </>
+                )}
+              </CardContent>
+            </Card>
+          )}
+    <footer className="p-6 text-center relative bg-gray-900">
+      <div
+        onMouseEnter={() => setShowInfo(true)}
+        onMouseLeave={() => setShowInfo(false)}
+        className="inline-block relative"
+      >
+        <Button variant="outline" className="gap-2 shadow-md hover:bg-gray-800 border-gray-700 text-black transition">
+          <Info /> How It Works
+        </Button>
+
+        {showInfo && (
+          <Card className="absolute top-full left-1/2 transform -translate-x-1/2 mt-3 w-96 shadow-xl border border-gray-700 bg-gray-800 text-white">
+            <CardContent className="text-sm p-5">
+              <p className="leading-relaxed">
+                <strong>CheckFirstLeh</strong> leverages advanced AI algorithms to analyze and validate your inputs by systematically scanning and cross-referencing information from trusted online sources. The summarized insights and visualizations clearly communicate the authenticity and context of claims to empower informed sharing.
+              </p>
+            </CardContent>
+          </Card>
+        )}
+      </div>
+
+      <section className="mt-12 max-w-4xl mx-auto bg-gray-800 shadow-xl rounded-xl p-8">
+        <h3 className="text-2xl font-bold mb-3 text-white">Severity of Fake News in Singapore</h3>
+        <p className="mb-6 text-gray-300 font-medium leading-relaxed">
+          Fake news continues to significantly impact Singapore's public discourse, political stability, and societal harmony. The pie chart below illustrates the distribution of misinformation sources affecting Singaporeans:
+        </p>
+        <ResponsiveContainer width="100%" height={320}>
+          <PieChart>
+            <Pie
+              data={fakeNewsData}
+              cx="50%"
+              cy="50%"
+              labelLine={false}
+              label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+              outerRadius={110}
+              innerRadius={60}
+              dataKey="value"
+            >
+              {fakeNewsData.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+              ))}
+            </Pie>
+            <Tooltip contentStyle={{ backgroundColor: '#374151', border: 'none' }} />
+            <Legend verticalAlign="bottom" height={36} wrapperStyle={{ color: '#fff' }} />
+          </PieChart>
+        </ResponsiveContainer>
+      </section>
+    </footer>
+    <section className="mt-12 max-w-4xl mx-auto bg-gray-800 shadow-lg rounded-xl p-8">
+        <h3 className="text-2xl font-bold mb-3 text-white">What We Do</h3>
+        <p className="text-gray-300 font-medium leading-relaxed">
+          At <strong>CheckFirstLeh</strong>, we collaborate closely with elderly community centers to combat misinformation effectively. Our service gathers and analyzes trending fake news flagged by our intelligent bots and extensive online research. Verified data and insights are then packaged and shared with NGO-operated community centers, which further relay this crucial information to local communities. Together, we empower citizens, particularly seniors, to make informed decisions and confidently navigate digital spaces.
+        </p>
+      </section>
       </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
     </div>
   );
 }
