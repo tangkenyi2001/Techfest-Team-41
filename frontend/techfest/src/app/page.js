@@ -76,17 +76,17 @@ export default function Home() {
         </div>
 
 
-          {result && (
-            <Card className="w-full max-w-4xl mt-8 shadow-xl">
-              <CardContent className="p-6">
-                {result.error ? (
-                  <p className="text-red-500">{result.error}</p>
-                ) : (
-                  <>
-                    <div className="flex justify-between items-center mb-4">
-                      <h2 className={`text-2xl font-semibold ${result.verdict === 'True' ? 'text-green-500' : result.verdict === 'False' ? 'text-red-500' : 'text-yellow-500'}`}>{result.verdict}</h2>
-                      <Button variant="outline" size="icon"><Share2 /></Button>
-                    </div>
+        {result && (
+        <Card className="w-full max-w-4xl mt-8 shadow-xl bg-gray-800 border border-gray-700 text-white mx-auto">
+          <CardContent className="p-6">
+            {result.error ? (
+              <p className="text-red-500">{result.error}</p>
+            ) : (
+              <>
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className={`text-2xl font-semibold ${result.verdict === 'True' ? 'text-green-500' : result.verdict === 'False' ? 'text-red-500' : 'text-yellow-500'}`}>{result.verdict}</h2>
+                  <Button variant="outline" size="icon"><Share2 /></Button>
+                </div>
 
                     <p className="mb-4">{result.explanation}</p>
 
